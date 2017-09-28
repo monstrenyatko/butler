@@ -1,0 +1,74 @@
+version: '3.1'
+
+services:
+  mosquitto:
+    image: monstrenyatko/rpi-mosquitto-auth
+    volumes:
+      - mosquitto-data:/mosquitto/data:rw
+      - $BUTLER_HOME/mosquitto/conf.d:/mosquitto/config/conf.d:ro
+      - $BUTLER_HOME/cert/ca/ca.crt.pem:/mosquitto/config/cert/ca.crt.pem:ro
+      - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.crt.pem:/mosquitto/config/cert/crt.pem:ro
+      - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.key.pem:/mosquitto/config/cert/key.pem:ro
+    ports:
+      - 1883:1883/tcp
+      - 8883:8883/tcp
+      - 9001:9001/tcp
+      - 9883:9883/tcp
+    restart: unless-stopped
+
+  mariadb:
+    image: monstrenyatko/rpi-mariadb
+    secrets:
+      - mariadb-db-password
+    volumes:
+      - mariadb-data:/var/lib/mysql:rw
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u butler --password=$$(cat /run/secrets/mariadb-db-password)"]
+      timeout: 20s
+      retries: 10
+
+  nginx:
+    image: monstrenyatko/rpi-nginx
+    depends_on:
+      - api
+    volumes:
+      - $BUTLER_HOME/nginx/conf.d:/etc/nginx/conf.d:ro
+      - $BUTLER_HOME/cert/ca/ca.crt.pem:/etc/nginx/cert/ca.crt.pem:ro
+      - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.crt.pem:/etc/nginx/cert/crt.pem:ro
+      - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.key.pem:/etc/nginx/cert/key.pem:ro
+    ports:
+      - 8000:80/tcp
+      - 8043:443/tcp
+    restart: unless-stopped
+
+  api:
+    image: monstrenyatko/rpi-butler-api
+    depends_on:
+      - mariadb
+    command: django-apps -w 3 -b :8000 butler_api.wsgi
+    environment:
+      - BUTLER_HOME=/butler-api
+      - BUTLER_HOST
+      - BUTLER_DB_HOST=mariadb
+      - BUTLER_DB_NAME=butler
+      - BUTLER_DB_USER=butler
+      - BUTLER_DB_PASSWORD_FILE=/run/secrets/mariadb-db-password
+      - BUTLER_API_DJANGO_SECRET_KEY_FILE=/run/secrets/api-django-secret-key
+    secrets:
+      - mariadb-db-password
+      - api-django-secret-key
+    volumes:
+      - $BUTLER_HOME/cert:/butler-api/cert:rw
+      - $BUTLER_HOME/fw:/butler-api/fw:rw
+    restart: unless-stopped
+
+volumes:
+  mosquitto-data:
+  mariadb-data:
+
+secrets:
+  mariadb-db-password:
+    file: $BUTLER_HOME/mariadb/db-password
+  api-django-secret-key:
+    file: $BUTLER_HOME/api/django-secret-key

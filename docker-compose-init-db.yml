@@ -1,0 +1,16 @@
+version: '3.1'
+
+services:
+  mariadb:
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mariadb-root-password
+      - MYSQL_PASSWORD_FILE=/run/secrets/mariadb-db-password
+      - MYSQL_DATABASE=butler
+      - MYSQL_USER=butler
+    secrets:
+      - mariadb-root-password
+      - mariadb-db-password
+
+secrets:
+  mariadb-root-password:
+    file: $BUTLER_HOME/mariadb/root-password
