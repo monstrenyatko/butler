@@ -6,7 +6,7 @@ set -x
 ENV_FILE=".env"
 # load variables from file if not already set
 while read -r line || [ -n "$line" ]; do
-    if [[ ! "$line" =~ ^\s*# ]]; then
+    if [ -n "$line" ] && [[ ! "$line" =~ ^\s*# ]]; then
         env_name=$(echo "$line" | cut -d "=" -f 1)
         if [ -z "${!env_name}" ]; then
             export "$line"
