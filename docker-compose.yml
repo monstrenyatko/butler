@@ -18,6 +18,9 @@ services:
 
   mariadb:
     image: monstrenyatko/rpi-mariadb
+    environment:
+      - MYSQL_UID=$BUTLER_MYSQL_UID
+      - MYSQL_GID=$BUTLER_MYSQL_GID
     secrets:
       - mariadb-db-password
     volumes:
