@@ -1,18 +1,11 @@
 #!/bin/bash
 
+source $(dirname $0)/functions.sh
+
 set -e
 set -x
 
-ENV_FILE=".env"
-# load variables from file if not already set
-while read -r line || [ -n "$line" ]; do
-    if [ -n "$line" ] && [[ ! "$line" =~ ^\s*# ]]; then
-        env_name=$(echo "$line" | cut -d "=" -f 1)
-        if [ -z "${!env_name}" ]; then
-            export "$line"
-        fi
-    fi
-done < $ENV_FILE
+load_env "${ENV_FILE:-.env}"
 
 INITIALIZED_FILE=$BUTLER_HOME/initialized
 

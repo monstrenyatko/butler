@@ -49,7 +49,7 @@ services:
     image: monstrenyatko/rpi-butler-api
     depends_on:
       - mariadb
-    command: django-apps -w 3 -b :8000 butler_api.wsgi
+    command: django-apps --preload -w 3 -b :8000 butler_api.wsgi
     environment:
       - BUTLER_HOME=/butler-api
       - BUTLER_HOST
@@ -58,6 +58,11 @@ services:
       - BUTLER_DB_USER=butler
       - BUTLER_DB_PASSWORD_FILE=/run/secrets/mariadb-db-password
       - BUTLER_API_DJANGO_SECRET_KEY_FILE=/run/secrets/api-django-secret-key
+      - BUTLER_API_UID
+      - BUTLER_API_GID
+      - BUTLER_CERT_KEY_UID
+      - BUTLER_CERT_KEY_GID
+      - BUTLER_CERT_KEY_MODE
     secrets:
       - mariadb-db-password
       - api-django-secret-key

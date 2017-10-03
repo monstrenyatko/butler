@@ -1,7 +1,11 @@
 #!/bin/bash
 
+source $(dirname $0)/functions.sh
+
 set -e
 set -x
+
+load_env "${ENV_FILE:-.env}"
 
 # MYSQL_ROOT_PASSWORD
 dir=$BUTLER_HOME/mariadb; \

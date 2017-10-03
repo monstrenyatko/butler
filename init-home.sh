@@ -1,7 +1,11 @@
 #!/bin/bash
 
+source $(dirname $0)/functions.sh
+
 set -e
 set -x
+
+load_env "${ENV_FILE:-.env}"
 
 mkdir -p $BUTLER_HOME/cert
 mkdir -p $BUTLER_HOME/fw
