@@ -35,6 +35,9 @@ services:
     image: monstrenyatko/rpi-nginx
     depends_on:
       - api
+    environment:
+      - NGINX_UID=$BUTLER_NGINX_UID
+      - NGINX_GID=$BUTLER_NGINX_GID
     volumes:
       - $BUTLER_HOME/nginx/conf.d:/etc/nginx/conf.d:ro
       - $BUTLER_HOME/cert/ca/ca.crt.pem:/etc/nginx/cert/ca.crt.pem:ro
