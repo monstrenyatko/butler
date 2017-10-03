@@ -3,6 +3,9 @@ version: '3.1'
 services:
   mosquitto:
     image: monstrenyatko/rpi-mosquitto-auth
+    environment:
+      - MOSQUITTO_UID=$BUTLER_MOSQUITTO_UID
+      - MOSQUITTO_GID=$BUTLER_MOSQUITTO_GID
     volumes:
       - mosquitto-data:/mosquitto/data:rw
       - $BUTLER_HOME/mosquitto/conf.d:/mosquitto/config/conf.d:ro
