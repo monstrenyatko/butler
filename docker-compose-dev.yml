@@ -2,16 +2,18 @@ version: '3.1'
 
 services:
   api:
-    command: django-apps --reload -w 3 --log-level debug -b :8000 butler_api.wsgi
+    command: django-apps --reload --log-level debug -w 1 -b :8000 butler_api.wsgi
     environment:
+      # need for --reload
+      - APP_USERNAME=root
       - DEBUG=True
       - BUTLER_API_DJANGO_EXTERNAL_SETTINGS_DIR=/butler-api/settings
       - BUTLER_API_DJANGO_LOG_LEVEL=DEBUG
       - BUTLER_API_DJANGO_REQ_LOG_LEVEL=DEBUG
     volumes:
-      - $BUTLER_SRC/manage.py:/butler-api/src/manage.py:ro
+      - $BUTLER_SRC/manage.py:/butler-api/src/manage.py:rw
       - $BUTLER_SRC/butler_api:/butler-api/src/butler_api:rw
       - $BUTLER_SRC/auth_manager:/butler-api/src/auth_manager:rw
       - $BUTLER_SRC/cert_manager:/butler-api/src/cert_manager:rw
       - $BUTLER_SRC/fw_manager:/butler-api/src/fw_manager:rw
-      - $BUTLER_HOME/api/external_settings.py:/butler-api/settings/external_settings.py:ro
+      - $BUTLER_HOME/api/external_settings.py:/butler-api/settings/external_settings.py:rw
