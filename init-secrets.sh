@@ -28,3 +28,10 @@ gen="import random; print(''.join([random.SystemRandom().choice('abcdefghijklmno
 mkdir -p $dir && \
 python -c "$gen" > $file && \
 chmod go-rwx $file
+
+# BUTLER_API_DJANGO_ADMIN_PASSWORD
+dir=$BUTLER_HOME/api; \
+file=$dir/django-admin-password; \
+mkdir -p $dir && \
+openssl rand -base64 20 > $file && \
+chmod go-rwx $file
