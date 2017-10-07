@@ -22,5 +22,6 @@ mkdir -p $BUTLER_HOME
 ./init-db.sh
 ./init-cert.sh
 ./init-api-admin.sh
+./init-api-static.sh
 
 touch $BUTLER_HOME/initialized

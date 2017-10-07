@@ -1,0 +1,6 @@
+version: '3.1'
+
+services:
+  api:
+    volumes:
+    - api-static:/mnt:rw

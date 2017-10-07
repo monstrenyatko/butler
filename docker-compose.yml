@@ -46,6 +46,7 @@ services:
       - $BUTLER_HOME/cert/ca/ca.crt.pem:/etc/nginx/cert/ca.crt.pem:ro
       - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.crt.pem:/etc/nginx/cert/crt.pem:ro
       - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.key.pem:/etc/nginx/cert/key.pem:ro
+      - api-static:/var/www/api-static:ro
     ports:
       - 8000:80/tcp
       - 8043:443/tcp
@@ -80,6 +81,7 @@ services:
 volumes:
   mosquitto-data:
   mariadb-data:
+  api-static:
 
 secrets:
   mariadb-db-password:
