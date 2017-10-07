@@ -21,7 +21,8 @@ $COMPOSE sh -c \
 'set -x && set -e &&'\
 'PySRC=$(python3 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") &&'\
 'find /mnt -mindepth 1 -delete &&'\
-'cp -r -v $PySRC/django/contrib/admin/static/admin /mnt/'
+'cp -r -v $PySRC/django/contrib/admin/static/admin /mnt/ &&'\
+'cp -r -v $PySRC/rest_framework_swagger/static/rest_framework_swagger /mnt/'
 
 set +x
 echo $'\n'"[DONE] API static"
