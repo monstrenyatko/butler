@@ -1,0 +1,9 @@
+version: '3.1'
+
+services:
+  api:
+    command: django-apps --preload --log-level debug -w 3 -b :8000 butler_api.wsgi
+    environment:
+      - DEBUG=True
+      - BUTLER_API_DJANGO_LOG_LEVEL=DEBUG
+      - BUTLER_API_DJANGO_REQ_LOG_LEVEL=DEBUG
