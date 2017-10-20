@@ -47,6 +47,7 @@ services:
       - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.crt.pem:/etc/nginx/cert/crt.pem:ro
       - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.key.pem:/etc/nginx/cert/key.pem:ro
       - api-static:/var/www/api-static:ro
+      - $BUTLER_HOME/fw:/var/www/api-media/fw:ro
     ports:
       - 8000:80/tcp
       - 8043:443/tcp
@@ -74,8 +75,8 @@ services:
       - mariadb-db-password
       - api-django-secret-key
     volumes:
-      - $BUTLER_HOME/cert:/butler-api/cert:rw
-      - $BUTLER_HOME/fw:/butler-api/fw:rw
+      - $BUTLER_HOME/cert:/butler-api/media/cert:rw
+      - $BUTLER_HOME/fw:/butler-api/media/fw:rw
     restart: unless-stopped
 
 volumes:
