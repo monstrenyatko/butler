@@ -25,11 +25,6 @@ services:
       - $BUTLER_HOME/cert/ca/ca.crt.pem:/mosquitto/config/cert/ca.crt.pem:ro
       - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.crt.pem:/mosquitto/config/cert/crt.pem:ro
       - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.key.pem:/mosquitto/config/cert/key.pem:ro
-    ports:
-      - 1883:1883/tcp
-      - 8883:8883/tcp
-      - 9001:9001/tcp
-      - 9883:9883/tcp
     restart: unless-stopped
 
   mariadb:
@@ -56,6 +51,7 @@ services:
       - NGINX_GID=$BUTLER_NGINX_GID
     volumes:
       - $BUTLER_HOME/nginx/conf.d:/etc/nginx/conf.d:ro
+      - $BUTLER_HOME/nginx/stream.d:/etc/nginx/stream.d:ro
       - $BUTLER_HOME/cert/ca/ca.crt.pem:/etc/nginx/cert/ca.crt.pem:ro
       - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.crt.pem:/etc/nginx/cert/crt.pem:ro
       - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.key.pem:/etc/nginx/cert/key.pem:ro
@@ -64,6 +60,7 @@ services:
     ports:
       - 8000:80/tcp
       - 8043:443/tcp
+      - 8883:8883/tcp
     restart: unless-stopped
 
   api:
