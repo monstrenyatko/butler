@@ -1,0 +1,12 @@
+auth_plugin /usr/local/lib/auth-plug.so
+auth_opt_backends jwt
+auth_opt_http_with_tls false
+auth_opt_http_ip api
+auth_opt_http_port 8000
+auth_opt_http_retry_count 3
+auth_opt_auth_cacheseconds 60
+auth_opt_acl_cacheseconds 60
+auth_opt_http_hostname $BUTLER_HOST
+auth_opt_http_getuser_uri /auth/mqtt/user/check/
+auth_opt_http_superuser_uri /auth/mqtt/superuser/check/
+auth_opt_http_aclcheck_uri /auth/mqtt/acl/check/

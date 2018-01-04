@@ -3,12 +3,25 @@ version: '3.1'
 services:
   mosquitto:
     image: $BUTLER_IMG_MOSQUITTO
+    depends_on:
+      - api
+    command:
+      - sh
+      - -c
+      - >-
+        envsubst '\$$BUTLER_HOST' < /mosquitto/config/conf.d.in/auth.conf.in > /mosquitto/config/conf.d/auth.conf
+        &&
+        /run.sh mosquitto-app -c /mosquitto/config/mosquitto.conf
     environment:
       - MOSQUITTO_UID=$BUTLER_MOSQUITTO_UID
       - MOSQUITTO_GID=$BUTLER_MOSQUITTO_GID
+      - BUTLER_HOST
     volumes:
       - mosquitto-data:/mosquitto/data:rw
-      - $BUTLER_HOME/mosquitto/conf.d:/mosquitto/config/conf.d:ro
+      - $BUTLER_HOME/mosquitto/conf.d/log.conf:/mosquitto/config/conf.d/log.conf:ro
+      - $BUTLER_HOME/mosquitto/conf.d/ssl.conf:/mosquitto/config/conf.d/ssl.conf:ro
+      - $BUTLER_HOME/mosquitto/conf.d/websockets.conf:/mosquitto/config/conf.d/websockets.conf:ro
+      - $BUTLER_HOME/mosquitto/conf.d/auth.conf.in:/mosquitto/config/conf.d.in/auth.conf.in:ro
       - $BUTLER_HOME/cert/ca/ca.crt.pem:/mosquitto/config/cert/ca.crt.pem:ro
       - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.crt.pem:/mosquitto/config/cert/crt.pem:ro
       - $BUTLER_HOME/cert/srv/$BUTLER_HOST/$BUTLER_HOST.key.pem:/mosquitto/config/cert/key.pem:ro
