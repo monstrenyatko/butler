@@ -42,6 +42,26 @@ services:
       timeout: 20s
       retries: 10
 
+  influxdb:
+    image: $BUTLER_IMG_INFLUXDB
+    environment:
+      - INFLUXDB_UID=$BUTLER_INFLUXDB_UID
+      - INFLUXDB_GID=$BUTLER_INFLUXDB_GID
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
+      - INFLUXDB_REPORTING_DISABLED=true
+      - INFLUXDB_MONITOR_STORE_ENABLED=false
+      - INFLUXDB_HTTP_LOG_ENABLED=false
+    secrets:
+      - influxdb-db-password
+    volumes:
+      - influxdb-data:/var/lib/influxdb:rw
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "[ 204 -eq $$(curl --write-out %{http_code} --silent --location --head --output /dev/null localhost:8086/ping?wait_for_leader=30s) ] || exit 1"]
+      timeout: 40s
+      retries: 3
+      interval: 60s
+
   nginx:
     image: $BUTLER_IMG_NGINX
     depends_on:
@@ -67,6 +87,7 @@ services:
     image: $BUTLER_IMG_BUTLER_API
     depends_on:
       - mariadb
+      - influxdb
     command: django-apps --preload -w 3 -b :8000 butler_api.wsgi
     environment:
       - BUTLER_HOME=/butler-api
@@ -75,6 +96,11 @@ services:
       - BUTLER_DB_NAME=butler
       - BUTLER_DB_USER=butler
       - BUTLER_DB_PASSWORD_FILE=/run/secrets/mariadb-db-password
+      - BUTLER_TSDB_HOST=influxdb
+      - BUTLER_TSDB_PORT=8086
+      - BUTLER_TSDB_NAME=butler
+      - BUTLER_TSDB_USER=butler
+      - BUTLER_TSDB_PASSWORD_FILE=/run/secrets/influxdb-db-password
       - BUTLER_API_DJANGO_SECRET_KEY_FILE=/run/secrets/api-django-secret-key
       - BUTLER_API_UID
       - BUTLER_API_GID
@@ -83,6 +109,7 @@ services:
       - BUTLER_CERT_KEY_MODE
     secrets:
       - mariadb-db-password
+      - influxdb-db-password
       - api-django-secret-key
     volumes:
       - $BUTLER_HOME/cert:/butler-api/media/cert:rw
@@ -92,10 +119,13 @@ services:
 volumes:
   mosquitto-data:
   mariadb-data:
+  influxdb-data:
   api-static:
 
 secrets:
   mariadb-db-password:
     file: $BUTLER_HOME/mariadb/db-password
+  influxdb-db-password:
+    file: $BUTLER_HOME/influxdb/db-password
   api-django-secret-key:
     file: $BUTLER_HOME/api/django-secret-key

@@ -10,7 +10,19 @@ services:
     secrets:
       - mariadb-root-password
       - mariadb-db-password
+  influxdb:
+    environment:
+      - INFLUXDB_ADMIN_PASSWORD_FILE=/run/secrets/influxdb-root-password
+      - INFLUXDB_USER_PASSWORD_FILE=/run/secrets/influxdb-db-password
+      - INFLUXDB_DB=butler
+      - INFLUXDB_ADMIN_USER=root
+      - INFLUXDB_USER=butler
+    secrets:
+      - influxdb-root-password
+      - influxdb-db-password
 
 secrets:
   mariadb-root-password:
     file: $BUTLER_HOME/mariadb/root-password
+  influxdb-root-password:
+    file: $BUTLER_HOME/influxdb/root-password

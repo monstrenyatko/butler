@@ -23,3 +23,7 @@ while [ $($DOCKER inspect --format "{{json .State.Health.Status }}" $service_id)
     sleep 1
 done
 echo $'\n'"[DONE] MariaDB"
+
+service='influxdb'
+$COMPOSE -f docker-compose.yml -f docker-compose-init-db.yml run --rm $service influxdb-app db-init
+echo $'\n'"[DONE] InfluxDB"

@@ -35,3 +35,17 @@ file=$dir/django-admin-password; \
 mkdir -p $dir && \
 openssl rand -base64 20 > $file && \
 chmod go-rwx $file
+
+# INFLUXDB_ADMIN_PASSWORD
+dir=$BUTLER_HOME/influxdb; \
+file=$dir/root-password; \
+mkdir -p $dir && \
+openssl rand -base64 20 > $file && \
+chmod go-rwx $file
+
+# INFLUXDB_USER_PASSWORD
+dir=$BUTLER_HOME/influxdb; \
+file=$dir/db-password; \
+mkdir -p $dir && \
+openssl rand -base64 20 > $file && \
+chmod go-rwx $file
