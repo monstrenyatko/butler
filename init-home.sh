@@ -12,3 +12,4 @@ mkdir -p $BUTLER_HOME/fw
 
 cp -R ./config/nginx $BUTLER_HOME
 cp -R ./config/mosquitto $BUTLER_HOME
+cp -R ./config/xbee-gw $BUTLER_HOME

@@ -64,8 +64,6 @@ services:
 
   nginx:
     image: $BUTLER_IMG_NGINX
-    depends_on:
-      - api
     environment:
       - NGINX_UID=$BUTLER_NGINX_UID
       - NGINX_GID=$BUTLER_NGINX_GID
@@ -116,6 +114,20 @@ services:
       - $BUTLER_HOME/fw:/butler-api/media/fw:rw
     restart: unless-stopped
 
+  xbee-gw:
+    image: $BUTLER_IMG_XBEE_GW
+    environment:
+      - BUTLER_XBEE_GW_UID
+      - BUTLER_XBEE_GW_GID
+      - BUTLER_XBEE_GW_JWT_KEY_FILE=/run/secrets/xbee-gw-jwt-key
+    secrets:
+      - xbee-gw-jwt-key
+    volumes:
+      - $BUTLER_HOME/xbee-gw/config.json:/etc/butler-xbee-gateway/config.json:ro
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0:rw"
+    restart: unless-stopped
+
 volumes:
   mosquitto-data:
   mariadb-data:
@@ -128,4 +140,6 @@ secrets:
   influxdb-db-password:
     file: $BUTLER_HOME/influxdb/db-password
   api-django-secret-key:
+    file: $BUTLER_HOME/api/django-secret-key
+  xbee-gw-jwt-key:
     file: $BUTLER_HOME/api/django-secret-key

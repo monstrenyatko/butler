@@ -1,0 +1,17 @@
+{
+	"logger": {
+		"level": "INFO"
+	},
+	"serial": {
+		"name": "/dev/ttyUSB0",
+		"baud": 57600
+	},
+	"tcp": {
+		"address": "mosquitto",
+		"port": 1883
+	},
+	"mqtt": {
+		"reset-on-connect": true,
+		"force-auth": true
+	}
+}
