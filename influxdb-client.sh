@@ -11,4 +11,4 @@ if [ -n "$1" ]; then
 fi
 
 service='influxdb'
-$COMPOSE exec $service sh -c "influx -host localhost -username butler -database butler -password=\$(cat /run/secrets/influxdb-db-password)"
+$COMPOSE exec $service sh -c "influx -host localhost -username butler -database butler -precision rfc3339 -password=\$(cat /run/secrets/influxdb-db-password)"
