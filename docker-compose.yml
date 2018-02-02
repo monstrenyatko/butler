@@ -91,13 +91,13 @@ services:
       - BUTLER_HOME=/butler-api
       - BUTLER_HOST
       - BUTLER_DB_HOST=mariadb
-      - BUTLER_DB_NAME=butler
-      - BUTLER_DB_USER=butler
+      - BUTLER_DB_NAME=$BUTLER_MYSQL_DATABASE
+      - BUTLER_DB_USER=$BUTLER_MYSQL_USER
       - BUTLER_DB_PASSWORD_FILE=/run/secrets/mariadb-db-password
       - BUTLER_TSDB_HOST=influxdb
       - BUTLER_TSDB_PORT=8086
-      - BUTLER_TSDB_NAME=butler
-      - BUTLER_TSDB_USER=butler
+      - BUTLER_TSDB_NAME=$BUTLER_INFLUXDB_DATABASE
+      - BUTLER_TSDB_USER=$BUTLER_INFLUXDB_USER
       - BUTLER_TSDB_PASSWORD_FILE=/run/secrets/influxdb-db-password
       - BUTLER_API_DJANGO_SECRET_KEY_FILE=/run/secrets/api-django-secret-key
       - BUTLER_API_UID
@@ -128,17 +128,56 @@ services:
       - "/dev/ttyUSB0:/dev/ttyUSB0:rw"
     restart: unless-stopped
 
+  grafana:
+    image: $BUTLER_IMG_GRAFANA
+    depends_on:
+      - mariadb
+      - influxdb
+    command:
+      - sh
+      - -c
+      - >-
+        envsubst '\$$GF_DATABASE_USER \$$GF_DATABASE_PASSWORD \$$GF_DATABASE_HOST \$$GF_DATABASE_NAME'
+        < /etc/grafana/grafana.ini.in > /etc/grafana/grafana.ini
+        &&
+        /run.sh grafana-app
+    environment:
+      - GRAFANA_UID=$BUTLER_GRAFANA_UID
+      - GRAFANA_GID=$BUTLER_GRAFANA_GID
+      - GF_PATHS_CONFIG=/etc/grafana/grafana.ini
+      - GF_ANALYTICS_REPORTING_ENABLED=false
+      - GF_DATABASE_TYPE=mysql
+      - GF_DATABASE_HOST=mariadb:3306
+      - GF_DATABASE_NAME=$BUTLER_MYSQL_GRAFANA_DATABASE
+      - GF_DATABASE_USER=$BUTLER_MYSQL_GRAFANA_USER
+      - GF_DATABASE_PASSWORD_FILE=/run/secrets/mariadb-grafana-db-password
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_SERVER_DOMAIN=$BUTLER_HOST
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:/grafana
+    secrets:
+      - mariadb-grafana-db-password
+    volumes:
+      - grafana-data:/var/lib/grafana:rw
+      - $BUTLER_HOME/grafana/grafana.ini.in:/etc/grafana/grafana.ini.in:ro
+    restart: unless-stopped
+
 volumes:
   mosquitto-data:
   mariadb-data:
   influxdb-data:
   api-static:
+  grafana-data:
 
 secrets:
   mariadb-db-password:
     file: $BUTLER_HOME/mariadb/db-password
+  mariadb-grafana-db-password:
+    file: $BUTLER_HOME/mariadb/grafana-db-password
   influxdb-db-password:
     file: $BUTLER_HOME/influxdb/db-password
+  influxdb-grafana-db-password:
+    file: $BUTLER_HOME/influxdb/grafana-db-password
   api-django-secret-key:
     file: $BUTLER_HOME/api/django-secret-key
   xbee-gw-jwt-key:

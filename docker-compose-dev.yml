@@ -18,3 +18,7 @@ services:
       - $BUTLER_SRC/fw_manager:/butler-api/src/fw_manager:rw
       - $BUTLER_SRC/mqtt_manager:/butler-api/src/mqtt_manager:rw
       - $BUTLER_HOME/api/external_settings.py:/butler-api/settings/external_settings.py:rw
+
+  grafana:
+    environment:
+      - NO_GOSU=1

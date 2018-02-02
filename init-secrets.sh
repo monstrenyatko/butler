@@ -21,6 +21,13 @@ mkdir -p $dir && \
 openssl rand -base64 20 > $file && \
 chmod go-rwx $file
 
+# MYSQL_GRAFANA_PASSWORD
+dir=$BUTLER_HOME/mariadb; \
+file=$dir/grafana-db-password; \
+mkdir -p $dir && \
+openssl rand -base64 20 > $file && \
+chmod go-rwx $file
+
 # BUTLER_API_DJANGO_SECRET_KEY
 dir=$BUTLER_HOME/api; \
 file=$dir/django-secret-key; \
@@ -46,6 +53,13 @@ chmod go-rwx $file
 # INFLUXDB_USER_PASSWORD
 dir=$BUTLER_HOME/influxdb; \
 file=$dir/db-password; \
+mkdir -p $dir && \
+openssl rand -base64 20 > $file && \
+chmod go-rwx $file
+
+# INFLUXDB_GRAFANA_PASSWORD
+dir=$BUTLER_HOME/influxdb; \
+file=$dir/grafana-db-password; \
 mkdir -p $dir && \
 openssl rand -base64 20 > $file && \
 chmod go-rwx $file

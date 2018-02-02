@@ -5,8 +5,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mariadb-root-password
       - MYSQL_PASSWORD_FILE=/run/secrets/mariadb-db-password
-      - MYSQL_DATABASE=butler
-      - MYSQL_USER=butler
+      - MYSQL_DATABASE=$BUTLER_MYSQL_DATABASE
+      - MYSQL_USER=$BUTLER_MYSQL_USER
     secrets:
       - mariadb-root-password
       - mariadb-db-password
@@ -14,9 +14,9 @@ services:
     environment:
       - INFLUXDB_ADMIN_PASSWORD_FILE=/run/secrets/influxdb-root-password
       - INFLUXDB_USER_PASSWORD_FILE=/run/secrets/influxdb-db-password
-      - INFLUXDB_DB=butler
+      - INFLUXDB_DB=$BUTLER_INFLUXDB_DATABASE
       - INFLUXDB_ADMIN_USER=root
-      - INFLUXDB_USER=butler
+      - INFLUXDB_USER=$BUTLER_INFLUXDB_USER
     secrets:
       - influxdb-root-password
       - influxdb-db-password
