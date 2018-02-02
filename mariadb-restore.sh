@@ -12,4 +12,4 @@ fi
 
 service='mariadb'
 serviceId=$($COMPOSE ps -q $service)
-$DOCKER exec -i $serviceId sh -c "mysql -h localhost -u butler --password=\$(cat /run/secrets/mariadb-db-password) butler"
+$DOCKER exec -i $serviceId sh -c "mysql --defaults-extra-file=/run/secrets/mariadb-root-options -h localhost butler"

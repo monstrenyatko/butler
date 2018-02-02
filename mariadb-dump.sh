@@ -10,4 +10,4 @@ if [ -n "$1" ]; then
 fi
 
 service='mariadb'
-$COMPOSE exec $service sh -c "mysqldump -h localhost -u butler --password=\$(cat /run/secrets/mariadb-db-password) butler"
+$COMPOSE exec $service sh -c "mysqldump --defaults-extra-file=/run/secrets/mariadb-root-options -h localhost butler"

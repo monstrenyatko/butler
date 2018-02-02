@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-set -x
+set -v
 
 
 DOCKER='docker'
@@ -11,4 +11,4 @@ if [ -n "$1" ]; then
 fi
 
 service='mariadb'
-$COMPOSE exec $service sh -c "mysql -h localhost -u butler --password=\$(cat /run/secrets/mariadb-db-password)"
+$COMPOSE exec $service sh -c "mysql --defaults-extra-file=/run/secrets/mariadb-root-options -h localhost"

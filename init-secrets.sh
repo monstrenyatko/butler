@@ -14,6 +14,18 @@ mkdir -p $dir && \
 openssl rand -base64 20 > $file && \
 chmod go-rwx $file
 
+# MYSQL_ROOT_OPTIONS_FILE
+dir=$BUTLER_HOME/mariadb; \
+file=$dir/root-options.cnf; \
+pass_file=$dir/root-password; \
+mkdir -p $dir && \
+echo "[client]" > $file && \
+echo "user=root" >> $file && \
+echo -n "password=" >> $file && \
+cat $pass_file >> $file && \
+echo '' >> $file && \
+chmod go-rwx $file
+
 # MYSQL_PASSWORD
 dir=$BUTLER_HOME/mariadb; \
 file=$dir/db-password; \

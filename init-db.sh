@@ -24,7 +24,7 @@ while [ $($DOCKER inspect --format "{{json .State.Health.Status }}" $service_id)
 done
 echo $'\n'"[READY] MariaDB"
 set -v
-MARIADB_CLIENT=( $DOCKER exec -i $service_id sh -c "mysql -h localhost -u root --password=\$(cat /run/secrets/mariadb-root-password)" )
+MARIADB_CLIENT=( $DOCKER exec -i $service_id sh -c "mysql --defaults-extra-file=/run/secrets/mariadb-root-options -h localhost" )
 echo "CREATE DATABASE IF NOT EXISTS \`$BUTLER_MYSQL_GRAFANA_DATABASE\` ;" | "${MARIADB_CLIENT[@]}"
 MARIADB_CLIENT+=( "$BUTLER_MYSQL_GRAFANA_DATABASE" )
 echo "CREATE USER IF NOT EXISTS '$BUTLER_MYSQL_GRAFANA_USER'@'%' IDENTIFIED BY '$(cat $BUTLER_HOME/mariadb/grafana-db-password)' ;" | "${MARIADB_CLIENT[@]}"
