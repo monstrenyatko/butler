@@ -50,6 +50,9 @@ services:
       - INFLUXDB_REPORTING_DISABLED=true
       - INFLUXDB_MONITOR_STORE_ENABLED=false
       - INFLUXDB_HTTP_LOG_ENABLED=false
+      - INFLUXDB_HTTP_ENABLED=true
+      - INFLUXDB_HTTP_BIND_ADDRESS=:8086
+      - INFLUXDB_BIND_ADDRESS=:8088
     secrets:
       - influxdb-db-password
     volumes:
