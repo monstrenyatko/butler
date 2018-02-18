@@ -7,3 +7,9 @@ services:
       - DEBUG=True
       - BUTLER_API_DJANGO_LOG_LEVEL=DEBUG
       - BUTLER_API_DJANGO_REQ_LOG_LEVEL=DEBUG
+
+  mqtt-data-recorder:
+    environment:
+      - DEBUG=True
+      - BUTLER_API_DJANGO_LOG_LEVEL=DEBUG
+      - BUTLER_API_DJANGO_REQ_LOG_LEVEL=DEBUG

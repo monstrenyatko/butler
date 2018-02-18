@@ -96,11 +96,6 @@ services:
       - BUTLER_DB_NAME=$BUTLER_MYSQL_DATABASE
       - BUTLER_DB_USER=$BUTLER_MYSQL_USER
       - BUTLER_DB_PASSWORD_FILE=/run/secrets/mariadb-db-password
-      - BUTLER_TSDB_HOST=influxdb
-      - BUTLER_TSDB_PORT=8086
-      - BUTLER_TSDB_NAME=$BUTLER_INFLUXDB_DATABASE
-      - BUTLER_TSDB_USER=$BUTLER_INFLUXDB_USER
-      - BUTLER_TSDB_PASSWORD_FILE=/run/secrets/influxdb-db-password
       - BUTLER_API_DJANGO_SECRET_KEY_FILE=/run/secrets/api-django-secret-key
       - BUTLER_API_UID
       - BUTLER_API_GID
@@ -109,11 +104,38 @@ services:
       - BUTLER_CERT_KEY_MODE
     secrets:
       - mariadb-db-password
-      - influxdb-db-password
       - api-django-secret-key
     volumes:
       - $BUTLER_HOME/cert:/butler-api/media/cert:rw
       - $BUTLER_HOME/fw:/butler-api/media/fw:rw
+    restart: unless-stopped
+
+  mqtt-data-recorder:
+    image: $BUTLER_IMG_BUTLER_API
+    depends_on:
+      - mariadb
+      - influxdb
+      - mosquitto
+    command: django-cli startmqttdatarecorder --host mosquitto
+    environment:
+      - BUTLER_HOME=/butler-api
+      - BUTLER_HOST
+      - BUTLER_DB_HOST=mariadb
+      - BUTLER_DB_NAME=$BUTLER_MYSQL_DATABASE
+      - BUTLER_DB_USER=$BUTLER_MYSQL_USER
+      - BUTLER_DB_PASSWORD_FILE=/run/secrets/mariadb-db-password
+      - BUTLER_API_DJANGO_SECRET_KEY_FILE=/run/secrets/api-django-secret-key
+      - BUTLER_TSDB_HOST=influxdb
+      - BUTLER_TSDB_PORT=8086
+      - BUTLER_TSDB_NAME=$BUTLER_INFLUXDB_DATABASE
+      - BUTLER_TSDB_USER=$BUTLER_INFLUXDB_USER
+      - BUTLER_TSDB_PASSWORD_FILE=/run/secrets/influxdb-db-password
+      - BUTLER_API_UID
+      - BUTLER_API_GID
+    secrets:
+      - mariadb-db-password
+      - influxdb-db-password
+      - api-django-secret-key
     restart: unless-stopped
 
   xbee-gw:

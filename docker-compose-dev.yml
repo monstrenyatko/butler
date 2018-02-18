@@ -19,6 +19,21 @@ services:
       - $BUTLER_SRC/mqtt_manager:/butler-api/src/mqtt_manager:rw
       - $BUTLER_HOME/api/external_settings.py:/butler-api/settings/external_settings.py:rw
 
+  mqtt-data-recorder:
+    environment:
+      - DEBUG=True
+      - BUTLER_API_DJANGO_EXTERNAL_SETTINGS_DIR=/butler-api/settings
+      - BUTLER_API_DJANGO_LOG_LEVEL=DEBUG
+      - BUTLER_API_DJANGO_REQ_LOG_LEVEL=DEBUG
+    volumes:
+      - $BUTLER_SRC/manage.py:/butler-api/src/manage.py:rw
+      - $BUTLER_SRC/butler_api:/butler-api/src/butler_api:rw
+      - $BUTLER_SRC/auth_manager:/butler-api/src/auth_manager:rw
+      - $BUTLER_SRC/cert_manager:/butler-api/src/cert_manager:rw
+      - $BUTLER_SRC/fw_manager:/butler-api/src/fw_manager:rw
+      - $BUTLER_SRC/mqtt_manager:/butler-api/src/mqtt_manager:rw
+      - $BUTLER_HOME/api/external_settings.py:/butler-api/settings/external_settings.py:rw
+
   grafana:
     environment:
       - NO_GOSU=1
