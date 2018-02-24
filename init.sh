@@ -23,5 +23,6 @@ mkdir -p $BUTLER_HOME
 ./init-cert.sh
 ./init-api-admin.sh
 ./init-api-static.sh
+./init-grafana.sh
 
 touch $BUTLER_HOME/initialized
